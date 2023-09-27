@@ -57,7 +57,29 @@ func (c Client) SelectTask(ctx context.Context, taskID int) (*model.Task, error)
 }
 
 func (c Client) UpdateTask(ctx context.Context, taskID int, task model.Task) error {
+	tx, err := c.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
 	q := `
+		SELECT
+		  task_id
+		FROM
+		  tasks
+		WHERE
+		  task_id = $1
+	`
+	if row := c.db.QueryRow(ctx, q, taskID); row.Scan() == pgx.ErrNoRows {
+		return fmt.Errorf("failed to select task ID: %w", pgx.ErrNoRows)
+	}
+	q = `
 		UPDATE
 		  tasks
 		SET
@@ -75,7 +97,29 @@ func (c Client) UpdateTask(ctx context.Context, taskID int, task model.Task) err
 }
 
 func (c Client) DeleteTask(ctx context.Context, taskID int) error {
+	tx, err := c.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
 	q := `
+		SELECT
+		  task_id
+		FROM
+		  tasks
+		WHERE
+		  task_id = $1
+	`
+	if row := c.db.QueryRow(ctx, q, taskID); row.Scan() == pgx.ErrNoRows {
+		return fmt.Errorf("failed to select task ID: %w", pgx.ErrNoRows)
+	}
+	q = `
 		DELETE FROM
 		  tasks
 		WHERE

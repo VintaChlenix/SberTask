@@ -28,3 +28,7 @@ func RenderBadRequest(w http.ResponseWriter, error error) {
 func RenderInternalError(w http.ResponseWriter, error error) {
 	http.Error(w, error.Error(), http.StatusInternalServerError)
 }
+
+func RenderNotFoundError(w http.ResponseWriter, error error) {
+	http.Error(w, error.Error(), http.StatusNotFound)
+}

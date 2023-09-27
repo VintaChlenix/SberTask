@@ -52,7 +52,7 @@ func (a *App) ReadTaskHandler(w http.ResponseWriter, r *http.Request) {
 	response, err := a.readTaskHandler(ctx, taskID)
 	if err != nil {
 		a.log.Errorf(err.Error())
-		handlers.RenderInternalError(w, err)
+		handlers.RenderNotFoundError(w, err)
 		return
 	}
 
@@ -86,7 +86,7 @@ func (a *App) UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := a.updateTaskHandler(ctx, taskID, request); err != nil {
 		a.log.Errorf(err.Error())
-		handlers.RenderInternalError(w, err)
+		handlers.RenderNotFoundError(w, err)
 		return
 	}
 
@@ -113,7 +113,7 @@ func (a *App) DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := a.deleteTaskHandler(ctx, taskID); err != nil {
 		a.log.Errorf(err.Error())
-		handlers.RenderInternalError(w, err)
+		handlers.RenderNotFoundError(w, err)
 		return
 	}
 
